@@ -1,65 +1,32 @@
 import { fileURLToPath } from "url";
 import express from "express";
+import "dotenv/config";
+import cookieparser from "cookie-parser";
 import http from "http";
 import path from "path";
 
-//path for es version
-const __filename = fileURLToPath(import.meta.url); //get path of index.js file
-const __dirname = path.dirname(__filename); //get base path of index.js file
+//configs
+import dbConnect from "./src/config/db.config.js";
+
+//routes
+import userRoute from "./src/Router/user.route.js";
 
 const app = express();
-const server = http.createServer(app);
-app.use(express.static(path.join(__dirname, "public")));
 
-//websocket
-import { Server } from "socket.io";
+//middlerware
+app.use(express.json());
+app.use(cookieparser());
 
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["POST", "GET"],
-    credentials: true,
-  },
+//router
+app.use(userRoute);
+
+app.use((err,req,res,next)=>{
+  if(err)
+    res.status(err.status || 500).json({messae:err.message});    
 });
 
-app.get("/", (req, res) => {
-  res.send("wokring");
-});
-
-const userSpace = io.of("/user");
-
-userSpace.use((socket,next)=>{
-  console.log(socket.handshake.query)
-});
-
-userSpace.on("connection",(socket)=>{
-  console.log("connected nameSpace")
-})
-
-io.on("connection", (socket) => {
-  console.log("webSocket connected");
-
-  socket.on("message", (msg) => {
-    console.log(io.sockets.adapter.rooms)
-    console.log("receive message :- ", msg);
-    socket.broadcast.emit("message", msg);
+dbConnect().then(()=>{
+  app.listen(3000,()=>{
+    console.log("working good"+"http://localhost:3000");
   });
-
-  socket.on("send-to", (obj) => {
-    console.log(io.sockets.adapter.rooms)
-    socket.to(obj.to).emit("message to", obj.message);
-  });
-
-  socket.on("join-room",(room)=>{
-    socket.join(room);
-    console.log("room join",room);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("disconnected");
-  });
-});
-
-server.listen(3000, () => {
-  console.log("working good : " + "http://localhost:3000");
-});
+}).catch(err=>console.log(err.message))
