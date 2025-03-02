@@ -1,0 +1,22 @@
+body{
+    background-color:rgba(0, 0, 0, 0.866);
+    color:white;
+}
+img{
+    width:100%;
+    height:100;
+    object-fit:cover;
+}
+.list-scroll::-webkit-scrollbar{
+    width:0;
+}
+.list-scroll{
+    scroll-snap-type: y mandatory;
+}
+.list-scroll >div{
+    scroll-snap-align:start;
+}
+
+.message::-webkit-scrollbar{
+    width:0
+}
