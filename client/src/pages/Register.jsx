@@ -1,7 +1,21 @@
 import {Link} from "react-router-dom"
 import {useState} from "react";
+import {register} from "../api/user.api.js";
+import {useMutation} from "@tanstack/react-query";
+import {useNavigate} from "react-router-dom";
 
 export default function Register() {
+  const navigate = useNavigate();
+    const {mutate} = useMutation({
+      mutationFn:register,
+      onSuccess:(res)=>{
+        navigate("/login");
+      },
+      onError:(err)=>{
+        alert(err.data)
+      }
+    });
+    
     const [data,setData] = useState({
         username:"",
         email:"",
@@ -13,9 +27,14 @@ export default function Register() {
             return {...pre,[e.target.name]:e.target.value}
         });
     }
+
+    function SubmitHandler(e){
+      e.preventDefault();
+      mutate(data)
+    }
   return (
     <main className="vw-100 vh-100 d-flex align-items-center justify-content-center">
-      <form className="p-4 py-5 shadow rounded bg-secondary">
+      <form onSubmit={SubmitHandler} className="p-4 py-5 shadow rounded bg-secondary">
         <h4 className="mb-4 text-center text-dark">Register</h4>
         <div className="input-group mb-4">
           <label className="input-group-text bg-dark text-white">User Name</label>

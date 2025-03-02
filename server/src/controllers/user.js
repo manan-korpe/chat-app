@@ -8,7 +8,7 @@ import ErrorResponse from "../utils/errorResponse.js";
 export async function register(req,res,next){
     try{
         const {username,email,password} = req.body;
-
+        console.log(username,email,password)
         if(!username || !email || !password)
            return next(new ErrorResponse(406,"enter valid values"));
             

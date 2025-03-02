@@ -1,12 +1,19 @@
-import {BrowserRouter} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import AppRoute from "./AppRoute.jsx";
+import { Provider } from "react-redux";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import Store from "../config/ReduxStore.js";
 
-export default function Index(){
-    return(
-        <>
-            <BrowserRouter>
-                <AppRoute/>
-            </BrowserRouter>
-        </>
-    )
+const queryClient = new QueryClient();
+
+export default function Index() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Provider store={Store}>
+        <BrowserRouter>
+          <AppRoute />
+        </BrowserRouter>
+      </Provider>
+    </QueryClientProvider>
+  );
 }

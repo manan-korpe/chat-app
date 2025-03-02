@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import express from "express";
 import "dotenv/config";
 import cookieparser from "cookie-parser";
+import cors from "cors";
 import http from "http";
 import path from "path";
 
@@ -16,6 +17,10 @@ const app = express();
 //middlerware
 app.use(express.json());
 app.use(cookieparser());
+app.use(cors({
+  origin:"*",
+  cradenetials:true
+}));
 
 //router
 app.use(userRoute);
