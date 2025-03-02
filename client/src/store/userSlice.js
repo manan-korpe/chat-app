@@ -1,0 +1,16 @@
+import {createSlice} from "@reduxjs/toolkit";
+
+export const initialState = {
+    email:"",
+    name:""
+}
+
+const userSlice = createSlice({
+    name:"user",
+    initialState,
+    reducers:{
+
+    }
+});
+
+export default userSlice.reducer 
