@@ -19,6 +19,21 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:""
     },
+    isOnline:{
+        type:Boolean,
+        default:false
+    },
+    contects:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:"users"
+        }
+    ],
+    gorup:[
+        {
+            type:String,
+        }
+    ],
     password:{
         type:String,
         required:true,
@@ -42,10 +57,8 @@ userSchema.methods.createToken = function(){
     console.log(process.env.JWT_KEY)
     return jwt.sign({email:this.email},process.env.JWT_KEY,{
         expiresIn:"1d"
-    })
+    });
 }
-userSchema.methods.compareToken = function(token){
-   return jwt.verify(token,process.env.JWT_KEY);
-}
+
  const users = mongoose.model("users",userSchema);
 export default users;

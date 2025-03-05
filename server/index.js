@@ -1,29 +1,30 @@
-import { fileURLToPath } from "url";
 import express from "express";
 import "dotenv/config";
 import cookieparser from "cookie-parser";
 import cors from "cors";
 import http from "http";
-import path from "path";
 
 //configs
 import dbConnect from "./src/config/db.config.js";
 
 //routes
 import userRoute from "./src/Router/user.route.js";
+import messageRoute from "./src/Router/message.route.js";
 
 const app = express();
+const server = http.createServer(app);
 
 //middlerware
 app.use(express.json());
-app.use(cookieparser());
 app.use(cors({
-  origin:"*",
-  cradenetials:true
+  origin:process.env.FRONTEND_URL,
+  credentials:true
 }));
+app.use(cookieparser());
 
 //router
-app.use(userRoute);
+app.use("/api/user/",userRoute);
+app.use("/api/message",messageRoute);
 
 app.use((err,req,res,next)=>{
   if(err)
@@ -31,7 +32,7 @@ app.use((err,req,res,next)=>{
 });
 
 dbConnect().then(()=>{
-  app.listen(3000,()=>{
-    console.log("working good"+"http://localhost:3000");
+  server.listen(3000,()=>{
+    console.log("working good "+"http://localhost:3000");
   });
 }).catch(err=>console.log(err.message))
