@@ -50,7 +50,7 @@ export default function AddContactForm() {
         style={{ bottom: "15px", right: "20px" }}
       >
         <button
-          className="btn btn-lg btn-success text-white shadow"
+          className="btn btn-lg btn-primary text-white shadow"
           data-bs-toggle="modal"
           data-bs-target="#addFried"
         >

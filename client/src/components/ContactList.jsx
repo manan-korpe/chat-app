@@ -12,7 +12,7 @@ export default function contactList() {
     <>
     {contacts.map((data,i)=>(
     <Link to={data._id} key={i}>
-        <div  className="bg-light row justify-content-center align-item-center  p-3 mb-2 shadow-sm rounded">
+        <div  className="bg-primary row justify-content-center align-item-center  p-3 mb-2 shadow-sm rounded">
         <div className="col-3">
             <img
             className="bg-info rounded-circle my-auto"
@@ -20,9 +20,9 @@ export default function contactList() {
             ></img>
         </div>
         <div className="col-7">
-            <h6 className="text-capitalize m-0 text-dark">{data.username}</h6>
+            <h6 className="text-capitalize m-0 text-light">{data.username}</h6>
             <div
-            className="w-100 text-truncate pe-3 text-muted"
+            className="w-100 text-truncate pe-3 text-light"
             style={{ height: "20px" }}
             >
             <small>

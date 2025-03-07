@@ -4,6 +4,7 @@ import { Suspense, lazy , useEffect, useContext} from "react";
 //components
 const Aside = lazy(() => import("../components/Aside.jsx"));
 const Message = lazy(() => import("../components/Message.jsx"));
+const Header = lazy(() => import("../components/Header.jsx"));
 
 function Home() {
   const {SocketConnection} = useContext(SocketContext);
@@ -16,8 +17,9 @@ function Home() {
 
   return (
     <>
-      <main className="container-fluid vh-100">
-        <section className="row g-2 h-100">
+      <main className="container-fluid vh-100 ">
+        <Header/>
+        <section className="row " style={{height:"91%"}}>
           <Aside />
           <Outlet/>
         </section>

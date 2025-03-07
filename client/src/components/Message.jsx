@@ -1,24 +1,25 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { HistoryMessage, SendMessage } from "../api/message.api.js";
 import { UserContext } from "../contexts/Usercontext.jsx";
 import { SocketContext } from "../contexts/SocketContext.jsx";
-
-export default function Message({ image}) {
-  const container =useRef();
+import { IoSettings } from "react-icons/io5";
+import { IoSend } from "react-icons/io5";
+export default function Message({ image }) {
+  const container = useRef();
   const { id } = useParams();
-  const { contacts,active } = useContext(UserContext);
+  const { contacts, active } = useContext(UserContext);
   const { socket } = useContext(SocketContext);
   const [history, setHistory] = useState([]);
   const [message, setMessage] = useState("");
   const reciverUser = contacts.find((val, i) => val._id == id);
-  console.log(active.includes(id))
-  useEffect(()=>{
-    if(container.current){
-     container.current.scrollTop = container.current.scrollHeight
+  console.log(active.includes(id));
+  useEffect(() => {
+    if (container.current) {
+      container.current.scrollTop = container.current.scrollHeight;
     }
-  },[history]);
+  }, [history]);
 
   //get message history
   const getMessageHistory = useMutation({
@@ -40,19 +41,18 @@ export default function Message({ image}) {
         return [...pre, res.data.data];
       });
       setMessage("");
-      
     },
     onError: (err) => {
       console.log(err);
     },
   });
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     getMessageHistory.mutate(id);
 
     //socket event function
-    function NewMeaageSocket(data){
-      console.log(data.senderId, id)
+    function NewMeaageSocket(data) {
+      console.log(data.senderId, id);
       if (data.senderId === id) {
         setHistory((pre) => {
           return [...pre, data];
@@ -62,18 +62,16 @@ export default function Message({ image}) {
 
     //check socket is exits and trigger event
     if (socket) {
-      socket.on("newMessage",NewMeaageSocket);
+      socket.on("newMessage", NewMeaageSocket);
     }
 
-    //remove event with pass event function for not generate multiple event 
-    return ()=>{
+    //remove event with pass event function for not generate multiple event
+    return () => {
       if (socket) {
-        socket.off("newMessage",NewMeaageSocket);
+        socket.off("newMessage", NewMeaageSocket);
       }
-      
-    }
-   
-  },[id,socket]);
+    };
+  }, [id, socket]);
 
   function SendMeaage(e) {
     e.preventDefault();
@@ -81,54 +79,62 @@ export default function Message({ image}) {
   }
 
   return (
-    <div className="col-7 col-md-9 text-white ">
-      <nav className="d-flex gap-4 align-items-center p-2 bg-secondary rounded-bottom-4">
-        <div
-          className="flex-shink-0 bg-info rounded-circle border border-2 border-success"
-          style={{ width: "50px", height: "50px" }}
-        >
-          <img src={image} alt="dp"></img>
-        </div>
-        <div className="w-75">
-          <h5 className="fs-5 m-0">{reciverUser.username} </h5>
-          <small
-            className={active.includes(id) ? "text-success fw-bold" : "text-danger"}
-            style={{ letterSpacing: ".8px" }}
+    <div className="col-7 col-md-9">
+      <div className="text-white bg-light ">
+        <nav className="nav align-items-center bg-primary p-2 rounded-bottom">
+          <div
+            className="position-relative nav-item bg-info rounded-circle  "
+            style={{ width: "2.5rem", height: "2.5rem" }}
           >
-            {active.includes(id) ? "online" : "offline"}
-          </small>
-        </div>
-        <div className="badge bg-success ">100+</div>
-      </nav>
-      <div
-      ref={container}
-        className="rounded-3 px-2 my-2 overflow-auto message"
-        style={{ height: "80vh" }}
-      >
-        <ul className=" w-100" style={{ listStyleType: "none" }} >
-          {history.map((val, i) => (
-            <Chat
-              key={i}
-              message={val.message}
-              time={`${val.createdAt.split("T")[1].split(":")[0]}:${
-                val.createdAt.split("T")[1].split(":")[1]
+            <img className="text-center" src="" alt="m" ></img>
+            <div
+              className={`position-absolute top-0 end-0  rounded-circle border border-2 ${
+                active.includes(id) ? "bg-success" : "bg-danger"
               }`}
-              who={id == val.reciverId ? "me" : "you"}
-            />
-          ))}
-        </ul>
-      </div>
-      <form onSubmit={SendMeaage} className="p-2 ">
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          ></input>
-          <button className="btn input-gorup-text btn-success">Send</button>
+              style={{ height: ".8rem", width: ".8rem" }}
+            ></div>
+          </div>
+          <div className=" nav-item ms-4">
+            <h6 className="fs-5 m-0">
+              {reciverUser?.username || "Not Found"}{" "}
+            </h6>
+          </div>
+          <Link className="text-white fs-4 ms-auto me-4" to="">
+            <IoSettings />
+          </Link>
+        </nav>
+        <div
+          ref={container}
+          className="rounded-3 px-2 my-2 overflow-auto message"
+          style={{ height: "73vh" }}
+        >
+          <ul className=" w-100" style={{ listStyleType: "none" }}>
+            {history.map((val, i) => (
+              <Chat
+                key={i}
+                message={val.message}
+                time={`${val.createdAt.split("T")[1].split(":")[0]}:${
+                  val.createdAt.split("T")[1].split(":")[1]
+                }`}
+                who={id == val.reciverId ? "me" : "you"}
+              />
+            ))}
+          </ul>
         </div>
-      </form>
+        <form onSubmit={SendMeaage} className="p-2  rounded ">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            ></input>
+            <button className="btn input-gorup-text btn-primary">
+              <IoSend />
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
