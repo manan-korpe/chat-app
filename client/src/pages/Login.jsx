@@ -1,21 +1,26 @@
-import { Link,useNavigate } from "react-router-dom";
-import { useState } from "react";
-import {login} from "../api/user.api.js";
-import {useMutation} from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { login } from "../api/user.api.js";
+import { useMutation } from "@tanstack/react-query";
+import { UserContext } from "../contexts/Usercontext.jsx";
 
 export default function Login() {
+  const { setUsername, setId, setContacts } = useContext(UserContext);
+
   const navigate = useNavigate();
-  const {mutate} = useMutation({
-    mutationFn:login,
-    onSuccess:(res)=>{
-      if(!res.data.hasError){
-        navigate("/");
+  const { mutate } = useMutation({
+    mutationFn: login,
+    onSuccess: (res) => {
+      if (!res.data.hasError) {
+        setUsername(res?.data?.data?.username);
+        setId(res?.data?.data?._id);
+        setContacts(res?.data?.data?.contects);
+        navigate("/chat");
       }
-      
     },
-    onError:(err)=>{
+    onError: (err) => {
       alert(err.message);
-    }
+    },
   });
 
   const [data, setData] = useState({
@@ -29,13 +34,16 @@ export default function Login() {
     });
   }
 
-  function submitHandler(e){
+  function submitHandler(e) {
     e.preventDefault();
-    mutate(data)
+    mutate(data);
   }
   return (
     <main className="vw-100 vh-100 d-flex align-items-center justify-content-center">
-      <form onSubmit={submitHandler} className="p-4 py-5 shadow rounded bg-secondary">
+      <form
+        onSubmit={submitHandler}
+        className="p-4 py-5 shadow rounded bg-secondary"
+      >
         <h4 className="mb-4 text-center text-dark">Login</h4>
         <div className="input-group mb-4">
           <label className="input-group-text bg-dark text-white">Email</label>

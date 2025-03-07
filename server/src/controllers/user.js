@@ -32,7 +32,6 @@ export async function register(req, res, next) {
       res
     );
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 }
@@ -62,78 +61,96 @@ export async function login(req, res, next) {
       secure: false,
       maxAge: 24 * 60 * 60 * 1000, //1day expire
     });
-    new SuccessResponse(201, "login sucssefuly").SendResponse(res);
+    new SuccessResponse(201, "login sucssefuly",user).SendResponse(res);
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 }
 
-export async function getAllUser(req, res, next){
-    try{
-        const user = await User.find();
-        res.status(201).json({message:"new contect added",user})
-    }catch(err){
-        res.status(500).json({ message: "internal server error" });
-    }
-}
-
-export async function addContect(req, res, next) {
+export async function getUser(req, res, next) {
   try {
-    const { email } = req.body;
-    if (!email)
-      return res.status(400).json({ message: "enter valid value" });
+    if (!req.body.email)
+      return next(new ErrorResponse(400, "Enter valid value"));
 
-    const friens = await User.findOne({ email: email }, { password: 0 });
+    const user = await User.findOne({
+      email: req.body.email,
+      _id: { $ne: req.user._id },
+    });
+    if (!user) return next(new ErrorResponse(400, "Enter valid value"));
 
-    if (!friens)
-      return res.status(400).json({ message: "email not find" });
-
-    const isExist = await User.findOne({contects:{_id:friens._id}});
-    if(isExist)
-      return res.status(400).json({ message: "email already in contects" });
-
-    if (!req.user)
-      return res.status(400).json({ message: "something want wrong" });
-
-    // const user = await User.find({ _id: req.user._id }, { password: 0 });
-
-    const updated_contects = await User.findOneAndUpdate({_id:req.user._id},{$push:{contects:friens}}).populate("contects");
-    if (!updated_contects)
-        return res.status(400).json({ message: "something want wrong" });
-
-    res.status(201).json({message:"new contect added",updated_contects})
+    res.status(200).json({ message: "new contect added", user });
   } catch (err) {
     res.status(500).json({ message: "internal server error" });
   }
 }
 
-export async function removeContact(req, res, next){
-  try{
+export async function getAllUser(req, res, next) {
+  try {
+    const user = await User.find();
+    res.status(201).json({ message: "new contect added", user });
+  } catch (err) {
+    res.status(500).json({ message: "internal server error" });
+  }
+}
+
+export async function addContect(req, res, next) {
+  try {
     const { email } = req.body;
-    if (!email)
-      return res.status(400).json({ message: "enter valid value" });
+    if (!email) return res.status(400).json({ message: "enter valid value" });
 
     const friens = await User.findOne({ email: email }, { password: 0 });
 
-    if (!friens)
-      return res.status(400).json({ message: "email not find" });
+    if (!friens) return res.status(400).json({ message: "email not find" });
+    if (!req.user)
+      return res.status(400).json({ message: "something want wrong" });
 
-    const isExist = await User.findOne({contects:{_id:friens._id}});
-    if(!isExist)
+    const isExist = await User.findOne({
+      _id: req.user._id,
+      contects: { _id: friens._id },
+    });
+
+    if (isExist)
+      return res.status(400).json({ message: "email already in contects" });
+    // const user = await User.find({ _id: req.user._id }, { password: 0 });
+
+    const updated_contects = await User.findOneAndUpdate(
+      { _id: req.user._id },
+      { $push: { contects: friens } },
+      { new: true }
+    ).populate("contects");
+    if (!updated_contects)
+      return res.status(400).json({ message: "something want wrong" });
+
+    res.status(201).json({ message: "new contect added", data: friens });
+  } catch (err) {
+    res.status(500).json({ message: "internal server error" });
+  }
+}
+
+export async function removeContact(req, res, next) {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "enter valid value" });
+
+    const friens = await User.findOne({ email: email }, { password: 0 });
+
+    if (!friens) return res.status(400).json({ message: "email not find" });
+
+    const isExist = await User.findOne({ contects: { _id: friens._id } });
+    if (!isExist)
       return res.status(400).json({ message: "email not in contects" });
 
     const removedFriedDocument = await User.findOneAndUpdate(
-      {$and:[{contects:{_id:friens._id}},{_id:req.user._id}]},
-      {$pull:{"contects":friens._id}},
-      {new:true}
+      { $and: [{ contects: { _id: friens._id } }, { _id: req.user._id }] },
+      { $pull: { contects: friens._id } },
+      { new: true }
     );
-console.log(removedFriedDocument.modifiedCount)
-    if(removedFriedDocument.modifiedCount <=0)
+    
+    if (removedFriedDocument.modifiedCount <= 0)
       return res.status(400).json({ message: "Document not updated" });
 
-      res.status(201).json({message:"contact removed",removedFriedDocument})
-  }catch(err){
-      res.status(500).json({ message: "internal server error" });
+    res.status(201).json({ message: "contact removed", removedFriedDocument });
+  } catch (err) {
+    res.status(500).json({ message: "internal server error" });
   }
 }

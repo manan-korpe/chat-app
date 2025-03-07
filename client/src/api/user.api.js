@@ -1,7 +1,7 @@
 import Axios from "./index.js";
 
 export async function isAuthenticate(){
-    const response = await Axios.get("/authenticate");
+    const response = await Axios.get("/api/user/authenticate");
     return response;
 }
 
@@ -21,4 +21,14 @@ export async function login(data) {
     },
   });
   return response;
+}
+
+export async function getUser(data) {
+  const response = await Axios.post("/api/user/getuser",{email:data});
+  return response
+}
+
+export async function addContact(data) {
+  const response = await Axios.post("/api/user/addContect",{email:data});
+  return response
 }

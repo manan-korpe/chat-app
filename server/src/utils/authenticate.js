@@ -17,14 +17,14 @@ export async function authenticate(req, res) {
       .status(401)
       .json({ isError: true, message: "unauthorized person" });
 
-  const user = await User.findOne({ email: data.email },{password:0});
+  const user = await User.findOne({ email: data.email },{password:0}).populate("contects");
 
   if (!user)
     return res
       .status(401)
       .json({ isError: true, message: "unauthorized person" });
 
-  res.status(200).json({ isError: false, message: "authorized person" });
+  res.status(200).json({ isError: false, message: "authorized person" ,data:user});
 }
 
 export default async function auth(req, res,next) {

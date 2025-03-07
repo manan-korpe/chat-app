@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
+import {getReciverSocketId,io} from "../config/webSocket.config.js";
 
 export async function contacts(req, res, next) {
   try {
@@ -19,6 +20,7 @@ export async function contacts(req, res, next) {
 }
 
 export async function sendMessage(req, res, next) {
+  console.log(req.body)
   try {
     if (!req.params.id)
       return res.status(400).json({ message: "user not found" });
@@ -51,9 +53,13 @@ export async function sendMessage(req, res, next) {
     if (!messageDb)
       return res.status(401).json({ message: "something want wrong" });
 
+    const reciverSocketId = getReciverSocketId(reciverUser._id);
+    
+    if(reciverSocketId)
+      io.to(reciverSocketId).emit("newMessage",messageDb);
+
     res.status(201).json({ message: "message sanded succssfuly",data:messageDb});
   } catch (err) {
-    console.log(err.message);
     res.status(500).json({ message: "internal server error" });
   }
 }
