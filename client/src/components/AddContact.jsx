@@ -58,22 +58,22 @@ export default function AddContactForm() {
         </button>
       </div>
       <div
-        className="modal  fade"
+        className="modal  fade r"
         id="addFried"
         tabIndex="-1"
         role="dialog"
         aria-labelledby="addFriedform"
         aria-hidden="true"
       >
-        <div className="modal-dialog mt-5 " role="document">
-          <div className="modal-content bg-dark">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content  bg-light">
             <div className="modal-header d-flex justify-content-between">
               <h5 className="modal-title" id="addFriedform">
                 Add Friend
               </h5>
               <button
                 type="button"
-                className="close btn btn-danger float-end"
+                className="close btn btn-danger  float-end"
                 data-bs-dismiss="modal"
                 aria-label="Close"
                 onClick={clearform}
@@ -93,7 +93,7 @@ export default function AddContactForm() {
                   ></input>
                   <button
                     type="button"
-                    className="input-group-text bg-info"
+                    className="input-group-text bg-primary text-white"
                     onClick={searchFriend}
                   >
                     Search
@@ -117,8 +117,8 @@ export default function AddContactForm() {
                 type="button"
                 className={
                   firendName == "Not Found"
-                    ? "btn btn-success disabled"
-                    : "btn btn-success "
+                    ? "btn btn-primary disabled"
+                    : "btn btn-primary "
                 }
                 onClick={firendName && addFriend}
                 data-bs-dismiss="modal"

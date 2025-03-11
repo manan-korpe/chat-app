@@ -1,4 +1,6 @@
 import User from "../models/user.model.js";
+import cloudinary from "../config/cloudinary.config.js";
+import fs from "fs";
 
 //utils
 import SuccessResponse from "../utils/successResponse.js";
@@ -63,6 +65,19 @@ export async function login(req, res, next) {
     });
     new SuccessResponse(201, "login sucssefuly",user).SendResponse(res);
   } catch (err) {
+    return next(err);
+  }
+}
+
+export async function logout(req,res,next){
+  try{
+    const {api_key} = req.cookies;
+
+    if(api_key)
+      res.clearCookie("api_key");
+    console.log("logout");
+    res.status(200).json({message:"logout successful"});
+  }catch(err){
     return next(err);
   }
 }
@@ -152,5 +167,34 @@ export async function removeContact(req, res, next) {
     res.status(201).json({ message: "contact removed", removedFriedDocument });
   } catch (err) {
     res.status(500).json({ message: "internal server error" });
+  }
+}
+
+export async function uploadProfile(req,res,next){
+  try{
+    if(!req.file)
+      return res.status(400).json({messagse:"file not found"});
+
+    const result = await cloudinary.uploader.upload(req.file.path,{resource_type:'auto'});
+    console.log(result.secure_url)
+    if(!result.secure_url){
+      return res.status(400).json({messagse:"file not uploaded"});
+    }
+
+    const updatedProfile = await User.findByIdAndUpdate(req.user._id, {$set:{profile:result.secure_url}});
+    fs.unlink(req.file.path,(err)=>{
+      if(err){
+        return  res.status(400).json({messagse:"file not uploaded"});
+      }
+      console.log("deleted");
+    });
+
+    if(!updatedProfile)
+     return res.status(400).json({messagse:"user not found try again"});
+
+    res.status(200).json({isError:false,messgae:"file uploaded"});
+  }catch(err){
+    console.log(err)
+    res.status(500).json({messagse:"internal server error"});
   }
 }

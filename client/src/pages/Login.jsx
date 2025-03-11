@@ -39,14 +39,14 @@ export default function Login() {
     mutate(data);
   }
   return (
-    <main className="vw-100 vh-100 d-flex align-items-center justify-content-center">
+    <main className="vw-100 vh-100 d-flex align-items-center justify-content-center bg-primary">
       <form
         onSubmit={submitHandler}
-        className="p-4 py-5 shadow rounded bg-secondary"
+        className="p-4 py-5 shadow rounded bg-light"
       >
-        <h4 className="mb-4 text-center text-dark">Login</h4>
+        <h4 className="mb-4 text-center text-primary">Login</h4>
         <div className="input-group mb-4">
-          <label className="input-group-text bg-dark text-white">Email</label>
+          <label className="input-group-text bg-primary text-white">Email</label>
           <input
             type="text"
             name="email"
@@ -56,7 +56,7 @@ export default function Login() {
           ></input>
         </div>
         <div className="input-group mb-4">
-          <label className="input-group-text bg-dark text-white">
+          <label className="input-group-text bg-primary text-white">
             password
           </label>
           <input
@@ -68,10 +68,10 @@ export default function Login() {
           ></input>
         </div>
         <div className="text-center">
-          <button className="btn btn-dark ">LogIn</button>
+          <button className="btn btn-primary ">LogIn</button>
         </div>
         <p className="text-end">
-          <Link to="/register " className="text-dark">
+          <Link to="/register " >
             Register
           </Link>
         </p>

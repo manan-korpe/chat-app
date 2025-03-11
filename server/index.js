@@ -6,12 +6,9 @@ import {app,server} from "./src/config/webSocket.config.js";
 
 //configs
 import dbConnect from "./src/config/db.config.js";
-
 //routes
 import userRoute from "./src/Router/user.route.js";
 import messageRoute from "./src/Router/message.route.js";
-
-
 //middlerware
 app.use(express.json());
 app.use(cors({

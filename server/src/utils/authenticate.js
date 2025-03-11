@@ -3,13 +3,14 @@ import User from "../models/user.model.js";
 
 export async function authenticate(req, res) {
   const { api_key } = req.cookies;
-
+  console.log(api_key)
   if (!api_key) {
     return res
-      .status(401)
-      .json({ isError: true, message: "unauthorized person" });
+    .status(401)
+    .json({ isError: true, message: "unauthorized person" });
   }
-
+  
+  
   const data = jwt.verify(api_key, process.env.JWT_KEY);
 
   if (!data.email)
