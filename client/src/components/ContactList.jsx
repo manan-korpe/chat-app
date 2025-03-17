@@ -15,6 +15,7 @@ export default function contactList() {
         <div  className="bg-primary row justify-content-center align-item-center  p-3 mb-2 shadow-sm rounded">
         <div className="col-3">
             <img
+            src={data.profile || "#"}
             className="bg-info rounded-circle my-auto"
             style={{ height: "2rem", width: "2rem" }}
             ></img>
@@ -35,7 +36,7 @@ export default function contactList() {
         </div>
         <div className="col-2">
             <div className="d-flex flex-column h-100 align-items-center justify-content-center">
-            <span className=" badge bg-success mb-1">46+</span>
+            {/* <span className=" badge bg-success mb-1">46+</span> */}
             <small className="text-muted" style={{ fontSize: ".8rem" }}>
                 yesterday
             </small>

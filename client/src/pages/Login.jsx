@@ -6,7 +6,6 @@ import { UserContext } from "../contexts/Usercontext.jsx";
 
 export default function Login() {
   const { setUsername, setId, setContacts } = useContext(UserContext);
-
   const navigate = useNavigate();
   const { mutate } = useMutation({
     mutationFn: login,

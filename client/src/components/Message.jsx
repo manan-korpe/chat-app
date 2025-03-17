@@ -14,6 +14,7 @@ export default function Message({ image }) {
   const [history, setHistory] = useState([]);
   const [message, setMessage] = useState("");
   const reciverUser = contacts.find((val, i) => val._id == id);
+
   console.log(active.includes(id));
   useEffect(() => {
     if (container.current) {
@@ -86,7 +87,7 @@ export default function Message({ image }) {
             className="position-relative nav-item bg-info rounded-circle  "
             style={{ width: "2.5rem", height: "2.5rem" }}
           >
-            <img className="text-center" src="" alt="m" ></img>
+            <img src={reciverUser?.profile || "#"} className="text-center" alt="m" ></img>
             <div
               className={`position-absolute top-0 end-0  rounded-circle border border-2 ${
                 active.includes(id) ? "bg-success" : "bg-danger"

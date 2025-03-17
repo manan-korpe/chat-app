@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { UserContext } from "../contexts/Usercontext.jsx";
 
 export default function Header() {
-  const { username, id } = useContext(UserContext);
+  const { username, id, profileimg } = useContext(UserContext);
 
   return (
     <header>
@@ -42,6 +42,7 @@ export default function Header() {
           </ul>
           <div className="d-flex align-items-center gap-3 ms-auto me-4 border border-primary ps-3 pe-1 py-1 rounded">
             <img
+            src={profileimg}
               alt="img"
               className="bg-info rounded-circle"
               style={{ height: "2rem", width: "2rem" }}

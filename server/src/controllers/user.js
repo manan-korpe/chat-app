@@ -172,9 +172,10 @@ export async function removeContact(req, res, next) {
 
 export async function uploadProfile(req,res,next){
   try{
+    console.log(req.file)
     if(!req.file)
       return res.status(400).json({messagse:"file not found"});
-
+    
     const result = await cloudinary.uploader.upload(req.file.path,{resource_type:'auto'});
     console.log(result.secure_url)
     if(!result.secure_url){
@@ -192,7 +193,7 @@ export async function uploadProfile(req,res,next){
     if(!updatedProfile)
      return res.status(400).json({messagse:"user not found try again"});
 
-    res.status(200).json({isError:false,messgae:"file uploaded"});
+    res.status(200).json({isError:false,messgae:"file uploaded",data:updatedProfile});
   }catch(err){
     console.log(err)
     res.status(500).json({messagse:"internal server error"});

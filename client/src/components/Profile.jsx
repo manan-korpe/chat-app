@@ -1,112 +1,68 @@
-import { FaPen } from "react-icons/fa6";
-import { MdCancel } from "react-icons/md";
-import { useContext, useState } from "react";
-import { UserContext } from "../contexts/Usercontext.jsx";
-import { updateProfile } from "../api/user.api.js";
-import { useMutation } from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query"
+import {useState, useContext} from "react";
+import {updateProfile} from "../api/user.api.js";
+import {UserContext} from "../contexts/Usercontext.jsx";
 
 export default function Profile() {
-  const { username, email } = useContext(UserContext);
-  const [isDisabled, setIsdisabled] = useState(true);
-  const [data, setData] = useState({
-    file: null,
-    username: username,
-    email: email,
-  });
+    const {username, email, profileimg} = useContext(UserContext);
 
-  const { mutate } = useMutation({
-    mutationFn: updateProfile,
-    onSuccess: (data) => {
-      alert("profile updated success fully");
-    },
-    onError: (err) => {
-      alert("something gone wrong try again");
-    },
-  });
-
-  function formHandler(e) {
-    setData((pre) => {
-      return { ...pre, [e.target.name]: e.target.value };
+    const [data,setData] = useState({
+        username:username,
+        email:email
     });
+    const [fileData,setFileData] = useState(null);
+
+    const {mutate} = useMutation({
+        mutationFn:updateProfile,
+        isSuccess:(res)=>{
+            alert(res.data.data.profile)
+        },
+        isError:(err)=>{
+            alert("err",err.message)
+        }
+    });
+
+  function updateData(e){
+    setData(pre=>{
+        return {...pre,[e.target.name]:e.target.value}
+    })
   }
 
-  function reSetForm() {
-    setData({
-      username: username,
-      email: email,
-    });
-    setIsdisabled(!isDisabled);
-  }
-
-  function updateProfile(e) {
+  function formhandler(e) {
     e.preventDefault();
-    const form = new FormData();
-    form.append("file", data.file);
-    form.append("username", data.username);
-    mutate(form);
+    const instform = new FormData();
+
+    instform.append("file",fileData)
+    instform.append("username",data.username)
+    instform.append("email",data.email);
+
+    mutate(instform);
   }
+
   return (
-    <div className="col-md-9 ">
-      <div className="h-100 bg-light d-flex align-items-start justify-content-center rounded-top">
+    <div className="col-md-9">
+      <div className="h-100 d-flex align-items-center justify-content-center">
         <form
-          onSubmit={updateProfile}
-          className="p-3 mt-5 w-50 rounded bg-primary text-white"
+          onSubmit={formhandler}
+          className="bg-primary px-3 py-5 text-white rounded w-50 d-flex flex-column gap-3"
         >
-          <h2 className="text-center p-3">Profile</h2>
-          <div className="d-flex flex-column gap-2 align-items-center mb-4">
-            <div style={{ width: "100px", height: "100px" }}>
-              <img className="img-thumbnail w-100 h-100 rounded-circle bg-light"></img>
+          <h2 className="text-center">Profile</h2>
+          <div className="d-flex flex-column align-items-center mb-1">
+            <div style={{width:"100px",height:"100px"}}>
+                <img className="img-thumbnail w-100 h-100 object-fit-cover rounded-circle" src={profileimg}></img>
             </div>
-            {!isDisabled && (
-              <input
-                type="file"
-                name="file"
-                value={data.file}
-                onChange={formHandler}
-              />
-            )}
+            <input className="form-control mt-3" type="file" name="file" onChange={e => setFileData(e.target.files[0])}/>
           </div>
-          <div className="mb-4">
+          <div>
             <label className="form-label">User Name</label>
-            <input
-              className="form-control"
-              name="username"
-              type="text"
-              onChange={formHandler}
-              value={data.username}
-              disabled={isDisabled}
-            ></input>
+            <input className="form-control" type="text" name="username" value={data.username} onChange={updateData}/>
           </div>
-          <div className="mb-4">
-            <label className="form-label">Email</label>
-            <input
-              className="form-control"
-              name="email"
-              type="text"
-              onChange={formHandler}
-              value={data.email}
-              disabled={isDisabled}
-            ></input>
+          <div>
+            <label className="form-label">email</label>
+            <input className="form-control" type="text" name="email" value={data.email} onChange={updateData}/>
           </div>
-          <div className="d-block text-center">
-            {isDisabled ? (
-              <button type="button" onClick={()=>setIsdisabled(!isDisabled)} className="btn btn-light text-primary">
-                <FaPen></FaPen>
-              </button>
-            ) : (
-              <>
-                <button type="submit" className="btn btn-light text-primary">
-                  Submit
-                </button>
-                <button
-                  onClick={reSetForm}
-                  type="button"
-                  className="btn btn-light ms-2 text-primary"
-                >
-                  <MdCancel />
-                </button>
-              </>
-            )}
+          <div className="text-center mt-4">
+            <button className="btn btn-light text-primary">Submit</button>
           </div>
         </form>
       </div>

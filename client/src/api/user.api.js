@@ -39,11 +39,6 @@ export async function addContact(data) {
 }
 
 export async function updateProfile(formdata){
-  const response = await Axios.post("api/user/updateprofile",formdata,{
-    headers:{
-      "Content-Type":"multipart/form-data",
-    }
-  });
-
+  const response = await Axios.post("api/user/updateprofile",formdata);
   return response
 }

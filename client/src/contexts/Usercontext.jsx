@@ -1,11 +1,12 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect,memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { isAuthenticate } from "../api/user.api.js";
 
 export const UserContext = createContext();
 
-export default function UserContextProvider({ children }) {
+ function UserContextProvider({ children }) {
   const [username, setUsername] = useState("");
+  const [profileimg, setProfileimg] = useState("");
   const [email, setEmail] = useState("");
   const [id, setId] = useState("");
   const [contacts, setContacts] = useState([]);
@@ -20,19 +21,19 @@ export default function UserContextProvider({ children }) {
   useEffect(() => {
     if (isSuccess) {
       setUsername(data?.data?.data?.username);
+      setProfileimg(data?.data?.data?.profile || "#");
       setEmail(data?.data?.data?.email);
       setId(data?.data?.data?._id);
       setContacts(data?.data?.data?.contects);
     }
   }, [data]);
-
-  console.log(id);
   return (
     <UserContext.Provider
       value={{
         username,
         id,
         email,
+        profileimg,
         contacts,
         isLoading,
         isError,
@@ -47,3 +48,5 @@ export default function UserContextProvider({ children }) {
     </UserContext.Provider>
   );
 }
+
+export default memo(UserContextProvider)
