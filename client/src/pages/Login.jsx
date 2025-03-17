@@ -35,6 +35,7 @@ export default function Login() {
 
   function submitHandler(e) {
     e.preventDefault();
+    setLoading(true);
     mutate(data);
   }
   return (
